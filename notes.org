@@ -1,0 +1,23 @@
+#+TITLE: Notes
+
+* Skywriter HAT Actions
+** Airwheel
+*** Clockwise
+*** Counterclockwise
+** Tap
+*** North
+*** East
+*** South
+*** West
+** DoubleTap
+*** North
+*** East
+*** South
+*** West
+** Flick
+*** North (start)
+*** East (start)
+- switch to workspace right
+*** South (start)
+*** West (start)
+- switch to workspace left
