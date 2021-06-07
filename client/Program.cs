@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading;
 using WebSocketSharp;
+using WebSocketSharp.Server;
 
 namespace client
 {
@@ -8,36 +8,12 @@ namespace client
     {
         static void Main(string[] args)
         {
-            using (WebSocket socket = new WebSocket("ws://192.168.0.23:8888"))
+            CommandHandler commandHandler = new CommandHandler();
+            commandHandler.MapAction("flick-north", new Action(application: "firefox"));
 
-            {
-                socket.OnOpen += (sender, e) =>
-                {
-                    Console.WriteLine("Connection established");
-
-                };
-
-                socket.OnMessage += (sender, e) =>
-                {
-                    Console.WriteLine(e.Data);
-                };
-
-                socket.OnError += (sender, e) =>
-                {
-                    Console.WriteLine(e.Message);
-                };
-
-                socket.Connect();
-
-                while (true)
-                {
-                    socket.Send("yup");
-                    Thread.Sleep(1000);
-                }
-
-
-            }
-            Console.WriteLine("Hello World!");
+            Client client = new Client(id: "client1", commandHandler: commandHandler);
+            client.Start("192.168.0.23:3000");
         }
     }
+
 }
