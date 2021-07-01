@@ -1,0 +1,48 @@
+#+title:     Yoda
+#+subtitle:  Interactive Prototyping 2
+#+author:    Simon Sölder
+#+email:     simon.soelder@fh-salzburg.ac.at
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+#+HTML_HEAD: <style> #content{max-width:1200px;}</style>
+#+OPTIONS: timestamp:nil
+
+* Introduction
+*Yoda* is a project, which is being prototyped for the final assignment of the class "Interactive Prototyping & Physical Computing 2"
+in the MMT Study of the University of Applied Sciences Salzburg.
+The aim of this prototype is to explore various possibilities to interact and control devices by using a series of pre-defined hand gestures.
+
+** Quick Overview
+- Gesture Control Interface which maps gestures to commands and sends them over a proxy to (multiple) clients via websockets
+- Gesture recognition happens on a =RaspberryPi 4B= using the =Skywriter Hat= 3D gesture sensing board.
+- Written in =python3=, =javascript= and =C#=.
+- Can be used everywhere as long as network communication can happen
+- Can be used on multiple devices as the gesture-to-action mapping happens on the client itself.
+  The clients can freely choose which command should map to which action.
+- Client tested on Linux, however it should work on every client where =.NET5.0= can be used
+
+** Terminology
+This section desribes the terminology used throughout the following text:
+- *gesture/command*: A hand gesture which is being captured with the =Skywriter Hat= board. (e.g. Flick, Tap, ...)
+- *message/payload*: JSON-encoded message containing information about the envoked gesture. It gets send over the network to various clients.
+- *action*: This desribes an action that is mapped to a specific gesture (e.g a progrem that gets executed due to a specific gesture)
+
+* What changed over the course of prototyping?
+The initial plan was to utilize the Raspberry Pi Camera Module to detect gestures using the =Google Tensorflow= framework,
+which failed due to the non-existing native ARM support and a number of problems while trying to compile it for said platform.
+Using the training scripts provided by ARM-software in [[https://github.com/ARM-software/ML-examples][this repo]], the AI could be trained - as several training iterations did not yield satisfying results
+(detection ratio was still very low), the project shifted towards using a =Skywriter Hat= as the input module - whereas not as powerful as the AI approach,
+it worked out great in the end.
+
+* How it works
+
+* Bill of Materials
+
+| Material/Device    | Quantity | est. Cost |
+|--------------------+----------+-----------|
+| RaspberryPi 4B 4GB |        1 | 58€       |
+| Power Supply 5V 3A |        1 | 9€        |
+| microSD Card 16GB  |        1 | 6€        |
+| Skywriter Hat      |        1 | 23€       |
+| Case               |        1 | -         |
+
+* Resources

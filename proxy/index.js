@@ -13,12 +13,23 @@ wss.on("connection", (ws) => {
   console.log("Websocket connection established")
 
   app.post("/", (req, res) => {
-    res.sendStatus(200)
+    console.log("Post request incoming...")
     console.log(req.body)
-    ws.send(JSON.stringify(req.body))
+    wss.clients.forEach((socket) => {
+      socket.send(JSON.stringify(req.body))
+    })
+    res.sendStatus(200)
+  })
+
+  ws.on("message", (msg) => {
+    console.log(msg)
+  })
+
+  ws.on("close", (ws) => {
+    console.log("Websocket connection closed")
   })
 })
 
 server.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Proxy listening at http://localhost:${port}`)
 })

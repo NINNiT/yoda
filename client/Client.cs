@@ -21,7 +21,7 @@ namespace client
             {
                 socket.OnOpen += (sender, e) =>
                 {
-                    Console.WriteLine("Connection established");
+                    Console.WriteLine("Websocket open");
 
                 };
 
@@ -36,12 +36,10 @@ namespace client
                 };
 
                 socket.Connect();
-                socket.Send("Client " + this.clientId + "Connected");
+                Console.WriteLine("Connection established!");
+                socket.Send("Client " + this.clientId + " connected");
 
-                while (true)
-                {
-                    Console.ReadLine();
-                }
+                Console.ReadLine();
             }
         }
     }

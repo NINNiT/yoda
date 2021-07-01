@@ -1,0 +1,72 @@
+#+TITLE: YODA
+#+SUBTITLE: Gesture Control Interface
+#+AUTHOR: Simon Sölder | Interactive Prototyping & Physical Computing II
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+OPTIONS: toc:nil date:nil
+#+REVEAL_VERSION: 4
+#+REVEAL_THEME: moon
+#+REVEAL_EXTRA_CSS: ./extra.css
+#+REVEAL_TRANS: slide
+#+REVEAL_HLEVEL: 1
+#+REVEAL_HEAD_PREAMBLE: <meta name="description" content="Org-Reveal Introduction.">
+# #+REVEAL_PLUGINS: (markdown notes)
+
+* Overview
+** Aim
+#+begin_quote
+The aim of this prototype is to explore various possibilities to interact and control devices by using a series of pre-defined hand gestures.
+#+end_quote
+** Terminology
+- *gesture/command*: a hand gesture which is being captured with the =Skywriter HAT= board. (e.g. Flick, Tap,...)
+- *message/payload*: JSON-encoded message containing information about the envoked gesture. It gets send over the network to various clients.
+- *action*: this desribes an action that is mapped to a specific gesture (e.g a program that gets executed due to a specific gesture)
+** Main Features
+- gesture control interface which maps gestures to actions on a remote device
+- *RaspberryPi 4B* and *Skywriter HAT* board
+- written in *python* (recognition), *javascript* (proxy) and *C#* (client)
+- clients can choose the mapping of commands --> actions freely
+- tested on Linux - should work cross-platform
+* Technology
+** Modules
+#+caption: the three main modules
+[[file:technology_graph.png]]
+** Gesture Script
+- detects gestures using the *Skywriter HAT* board and the available library
+- written in *python3*
+- sends POST request to proxy on valid gesture
+- JSON-encoded message
+** Proxy
+- receives messages from gesture script
+- forwards messages to all connected clients using websockets
+- written in *javascript* (nodejs, express, ws)
+- benefits: scaling, split logic, no headaches (more on that later)
+** Client
+- written in *C#* (.NET5)
+- listens to incoming websocket messages
+- fires appropriate action and starts processes
+- dictionary of gestures -> actions
+[[file:client_map_code.png]]
+* Procedure
+** Pre-Skywriter Era
+- initial plan was to utilize RaspberryPi Camera Module to detect gestures using *Tensorflow*
+- no success due to non-existing native ARM support and various problems while compiling
+- ARM-software AI training scripts: (very) low detection ratio after several iterations
+- decision to shift focus towards using the *Skywriter HAT*
+** Post-AI Era
+- instant success with gesture recognition
+- problems when combining *websockets* (signals) and *skywriter library* (asyncio)
+- decision to implement proxy due to above problems and other benefits
+* Learnings
+- websockets
+- C# Process management + handling
+- basic AI understanding
+* Media
+** Image I
+[[file:yoda-front.jpg]]
+** Image II
+[[file:yoda-side.jpg]]
+** Image III
+#+ATTR_HTML: :width 700
+[[file:yoda-inside.jpg]]
+** Video
+* THE END

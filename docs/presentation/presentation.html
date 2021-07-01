@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>YODA</title>
+    <meta name="author" content=
+    "Simon Sölder | Interactive Prototyping &amp; Physical Computing II">
+
+    <style type="text/css">
+    .underline { text-decoration: underline; }
+    </style>
+    <link rel="stylesheet" href=
+    "https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href=
+    "https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/moon.css"
+    id="theme">
+    <link rel="stylesheet" href="./extra.css">
+    <meta name="description" content="Org-Reveal Introduction.">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section id="sec-title-slide">
+                <h1 class="title">YODA</h1>
+                <h2 class="author">Simon Sölder | Interactive
+                Prototyping & Physical Computing II</h2>
+                <p class="date">Created: 2021-06-09 Wed 19:49</p>
+            </section>
+            <section>
+                <section id="slide-1">
+                    <h2 id="1"><span class=
+                    "section-number-2">1</span> Overview</h2>
+                    <div class="outline-text-2" id="text-1"></div>
+                </section>
+                <section id="slide-1-1">
+                    <h3 id="1-1"><span class=
+                    "section-number-3">1.1</span> Aim</h3>
+                    <blockquote>
+                        <p>The aim of this prototype is to explore
+                        various possibilities to interact and
+                        control devices by using a series of
+                        pre-defined hand gestures.</p>
+                    </blockquote>
+                </section>
+                <section id="slide-1-2">
+                    <h3 id="1-2"><span class=
+                    "section-number-3">1.2</span> Terminology</h3>
+                    <ul>
+                        <li><b>gesture/command</b>: a hand gesture
+                        which is being captured with the
+                        <code>Skywriter HAT</code> board. (e.g.
+                        Flick, Tap,…)</li>
+                        <li><b>message/payload</b>: JSON-encoded
+                        message containing information about the
+                        envoked gesture. It gets send over the
+                        network to various clients.</li>
+                        <li><b>action</b>: this desribes an action
+                        that is mapped to a specific gesture (e.g a
+                        progrem that gets executed due to a
+                        specific gesture)</li>
+                    </ul>
+                </section>
+                <section id="slide-1-3">
+                    <h3 id="1-3"><span class=
+                    "section-number-3">1.3</span> Main
+                    Features</h3>
+                    <ul>
+                        <li>gesture control interface which maps
+                        gestures to actions on a remote device</li>
+                        <li><b>RaspberryPi 4B</b> and <b>Skywriter
+                        HAT</b> board</li>
+                        <li>written in <b>python</b> (recognition),
+                        <b>javascript</b> (proxy) and <b>C#</b>
+                        (client)</li>
+                        <li>clients can choose the mapping of
+                        commands –&gt; actions freely</li>
+                        <li>tested on Linux - should work
+                        cross-platform</li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section id="slide-2">
+                    <h2 id="2"><span class=
+                    "section-number-2">2</span> Technology</h2>
+                    <div class="outline-text-2" id="text-2"></div>
+                </section>
+                <section id="slide-2-1">
+                    <h3 id="2-1"><span class=
+                    "section-number-3">2.1</span> Modules</h3>
+                    <div id="orgd9b77ff" class="figure">
+                        <p><img src="technology_graph.png" alt=
+                        "technology_graph.png"></p>
+                        <p><span class="figure-number">Figure
+                        1:</span> the three main modules</p>
+                    </div>
+                </section>
+                <section id="slide-2-2">
+                    <h3 id="2-2"><span class=
+                    "section-number-3">2.2</span> Gesture
+                    Script</h3>
+                    <ul>
+                        <li>detects gestures using the <b>Skywriter
+                        HAT</b> board and the available
+                        library</li>
+                        <li>written in <b>python3</b></li>
+                        <li>sends POST request to proxy on valid
+                        gesture</li>
+                        <li>JSON-encoded message</li>
+                    </ul>
+                </section>
+                <section id="slide-2-3">
+                    <h3 id="2-3"><span class=
+                    "section-number-3">2.3</span> Proxy</h3>
+                    <ul>
+                        <li>receives messages from gesture
+                        script</li>
+                        <li>forwards messages to all connected
+                        clients using websockets</li>
+                        <li>written in <b>javascript</b> (nodejs,
+                        express, ws)</li>
+                        <li>benefits: scaling, split logic, no
+                        headaches (more on that later)</li>
+                    </ul>
+                </section>
+                <section id="slide-2-4">
+                    <h3 id="2-4"><span class=
+                    "section-number-3">2.4</span> Client</h3>
+                    <ul>
+                        <li>written in <b>C#</b> (.NET5)</li>
+                        <li>listens to incoming websocket
+                        messages</li>
+                        <li>fires appropriate action and starts
+                        processes</li>
+                        <li>dictionary of gestures -&gt;
+                        actions</li>
+                    </ul>
+                    <div id="orgfaf83de" class="figure">
+                        <p><img src="client_map_code.png" alt=
+                        "client_map_code.png"></p>
+                    </div>
+                </section>
+            </section>
+            <section>
+                <section id="slide-3">
+                    <h2 id="3"><span class=
+                    "section-number-2">3</span> Procedure</h2>
+                    <div class="outline-text-2" id="text-3"></div>
+                </section>
+                <section id="slide-3-1">
+                    <h3 id="3-1"><span class=
+                    "section-number-3">3.1</span> Pre-Skywriter
+                    Era</h3>
+                    <ul>
+                        <li>initial plan was to utilize RaspberryPi
+                        Camera Module to detect gestures using
+                        <b>Tensorflow</b></li>
+                        <li>no success due to non-existing native
+                        ARM support and various problems while
+                        compiling</li>
+                        <li>ARM-software AI training scripts:
+                        (very) low detection ratio after several
+                        iterations</li>
+                        <li>decision to shift focus towards using
+                        the <b>Skywriter HAT</b></li>
+                    </ul>
+                </section>
+                <section id="slide-3-2">
+                    <h3 id="3-2"><span class=
+                    "section-number-3">3.2</span> Post-AI Era</h3>
+                    <ul>
+                        <li>instant success with gesture
+                        recognition</li>
+                        <li>problems when combining
+                        <b>websockets</b> (signals) and
+                        <b>skywriter library</b> (asyncio)</li>
+                        <li>decision to implement proxy due to
+                        above problems and other benefits</li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section id="slide-4">
+                    <h2 id="4"><span class=
+                    "section-number-2">4</span> Learnings</h2>
+                    <ul>
+                        <li>websockets</li>
+                        <li>C# Process management + handling</li>
+                        <li>basic AI understanding</li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section id="slide-5">
+                    <h2 id="5"><span class=
+                    "section-number-2">5</span> Media</h2>
+                    <div class="outline-text-2" id="text-5"></div>
+                </section>
+                <section id="slide-5-1">
+                    <h3 id="5-1"><span class=
+                    "section-number-3">5.1</span> Image I</h3>
+                    <div id="org1485798" class="figure">
+                        <p><img src="yoda-front.jpg" alt=
+                        "yoda-front.jpg"></p>
+                    </div>
+                </section>
+                <section id="slide-5-2">
+                    <h3 id="5-2"><span class=
+                    "section-number-3">5.2</span> Image II</h3>
+                    <div id="org610fdfd" class="figure">
+                        <p><img src="yoda-side.jpg" alt=
+                        "yoda-side.jpg"></p>
+                    </div>
+                </section>
+                <section id="slide-5-3">
+                    <h3 id="5-3"><span class=
+                    "section-number-3">5.3</span> Image III</h3>
+                    <div id="org4727823" class="figure">
+                        <p><img src="yoda-inside.jpg" alt=
+                        "yoda-inside.jpg" width="700"></p>
+                    </div>
+                </section>
+                <section id="slide-5-4">
+                    <h3 id="5-4"><span class=
+                    "section-number-3">5.4</span> Video</h3>
+                </section>
+            </section>
+            <section>
+                <section id="slide-6">
+                    <h2 id="6"><span class=
+                    "section-number-2">6</span> THE END</h2>
+                </section>
+            </section>
+        </div>
+    </div>
+    <script src=
+    "https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+    
+    <script src=
+    "https://cdn.jsdelivr.net/npm/reveal.js/plugin/markdown/markdown.js"></script>
+    
+    <script src=
+    "https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+    
+    <script src=
+    "https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+    
+    <script src=
+    "https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+    
+    <script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+
+    controls: true,
+    progress: true,
+    history: false,
+    center: true,
+    slideNumber: 'c',
+    rollingLinks: false,
+    keyboard: true,
+    mouseWheel: false,
+    fragmentInURL: false,
+    hashOneBasedIndex: false,
+    pdfSeparateFragments: true,
+
+    overview: true,
+
+    transition: 'slide',
+    transitionSpeed: 'default',
+
+    // Plugins with reveal.js 4.x
+    plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+    // Optional libraries used to extend reveal.js
+    dependencies: [
+    ]
+
+    });
+    </script>
+</body>
+</html>
